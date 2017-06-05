@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html style='width:100%; height:100%; border:0; margin:0; padding:0;'>
+<style>
+/* Full-width input fields */
+input[type=integer], input[type=float] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+    background-color: #3CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+}
+
+img.avatar {
+    width: 40%;
+    border-radius: 50%;
+}
+
+.container {
+    padding: 16px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
+    cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)} 
+    to {-webkit-transform: scale(1)}
+}
+    
+@keyframes animatezoom {
+    from {transform: scale(0)} 
+    to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+    span.psw {
+       display: block;
+       float: none;
+    }
+    .cancelbtn {
+       width: 100%;
+    }
+}
+</style>
+
+  <head>
+    <meta http-equiv='X-UA-Compatible' content='chrome=1'/>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'/>
+    <meta http-equiv='Content-Type' content='text/html;charset=utf-8'/>
+    <link rel='stylesheet' type='text/css' href='http://www.x3dom.org/x3dom/release/x3dom.css'/>
+    <script type='text/javascript' src='http://www.x3dom.org/x3dom/release/x3dom.js'></script>
+
+
+    <script>
+    function processTranslationGizmoEvent(event)
+    {
+        var sensorToWorldMatrix, translationValue, planesensorName, transformName;
+     	gridCubeWidth = 0.13, gridCubeHeight = 0.13;
+
+        if (event.fieldName === 'translation_changed' )
+        {
+            //convert the sensor's output from sensor coordinates to world coordinates (i.e., include its 'axisRotation')
+            sensorToWorldMatrix = x3dom.fields.SFMatrix4f.parseRotation(event.target.getAttribute("axisRotation"));	
+            translationValue = sensorToWorldMatrix.multMatrixVec(event.value);  
+            planesensorName = event.target.getAttribute("id");
+ 			transformName = planesensorName.concat("_Move");
+            
+
+            translationValue.x = Math.floor(translationValue.x / gridCubeWidth) * gridCubeWidth;
+            translationValue.y = Math.floor(translationValue.y / gridCubeHeight) * gridCubeHeight;
+            
+
+            // if (translationValue === document.getElementById('Box3_Move').getAttribute('translation'))
+            // {
+            // 	alert("Invalid move!");
+            // 	document.getElementById(transformName).setFieldValue('translation', 'translation');
+            	
+            // }
+
+            // else
+            // {
+            	//transform the affected sensor geometry
+            	document.getElementById(transformName).setFieldValue('translation', translationValue);
+            //}
+        }
+    }
+
+
+    </script>
+   
+
+    <style>.x3dom-logContainer { bottom: 0px; position: absolute; }
+    </style>
+
+  </head>
+  <title>Testing....</title>
+  <body style='width:100%; height:100%; border:0; margin:0; padding:0;'>
+
+    <div id='HUDs_Div'> 
+
+      <div id='Interaction_Toolbox' style='margin:2px; padding:4px 150px 4px 4px; background-color:rgba(199,202,204,.7); position:absolute; z-index:1000; right:0px; top:0px;'> 
+        <table> 
+          <tr> 
+            <td>Navigation Mode: 
+            </td> 
+            <td align='right'> 
+              <select style='float:right;' onchange='document.getElementById(&apos;x3dElement&apos;).runtime[value]();'> 
+                <option selected='selected' value='examine'>Examine 
+                </option> 
+                <option value='turnTable'>TurnTable 
+                </option> 
+                <option value='lookAt'>LookAt 
+                </option> 
+                <option value='lookAround'>LookAround 
+                </option> 
+                <option value='fly'>Fly 
+                </option> 
+                <option value='freeFly'>FreeFly 
+                </option> 
+                <option value='helicopter'>Helicopter 
+                </option> 
+                <option value='walk'>Walk 
+                </option>  
+                <option value='noNav'>None 
+                </option> 
+              </select> 
+            </td> 
+          </tr> 
+          <tr> 
+            <td>Debug Display: 
+            </td> 
+            <td align='right'> 
+              <input type='checkbox' onclick='document.getElementById(&apos;x3dElement&apos;).runtime.statistics(this.checked);'> 
+              </input> Stats 
+              <input type='checkbox' onclick='document.getElementById(&apos;x3dElement&apos;).runtime.debug();'> 
+              </input> Log 
+            </td> 
+          </tr> 
+          <tr> 
+            <td> 
+              <button onclick='document.getElementById(&apos;x3dElement&apos;).runtime.showAll();'> Show Everything 
+              </button> 
+            </td> 
+            <td> 
+              <button onclick='document.getElementById(&apos;x3dElement&apos;).runtime.resetView();'> Reset View 
+              </button> 
+            </td> 
+          </tr> 
+        </table> 
+      </div> 
+    </div>
+
+<h3>Change attributes</h3>
+
+<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Attributes</button>
+
+<div id="id01" class="modal">
+  
+  <form class="modal-content animate" action="/action_page.php">
+    <div class="imgcontainer">
+      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+<!--       <img src="img_avatar2.png" alt="Avatar" class="avatar"> -->
+    </div>
+
+    <div class="container">
+      <label><b>Assembly Type</b></label>
+      <input type="integer" placeholder="Integer" name="assemblyType" required>
+
+      <label><b>Cooling time</b></label>
+      <input type="float" placeholder="Float" name="coolingTime" required>
+        
+      <label><b>Burn up</b></label>
+      <input type="float" placeholder="Float" name="burnUp" required>
+
+      <button type="submit">Submit</button>
+   
+    </div>
+
+
+  </form>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+    <x3d id='x3dElement' showStat='false' showLog='false' style='width:100%; height:100%; border:0; margin:0; padding:0;'>
+      <scene>
+        <worldInfo info='"This Web3D Content was created with Vivaty Studio, a Web3D authoring tool" "www.mediamachines.com"' title='simple_assemmbly'></worldInfo>
+        <transform DEF='dad_floor' translation='-0.1144 0 0.06864'>
+          <shape DEF='floor'>
+            <appearance>
+              <material DEF='Shiny_White' diffuseColor='1 1 1' shininess='0.1' specularColor='1 1 1'></material>
+            </appearance>
+            <box DEF='GeoBox1' size='4 0.1 4'></box>
+          </shape>
+        </transform>
+      
+        <group>
+        <planeSensor id ='Box2' autoOffset='true' axisRotation='1 0 0' minPosition='-2 -2' maxPosition='2 2' onoutputchange='processTranslationGizmoEvent(event)'>
+        </planeSensor>
+        <transform  translation='0 0.85 0'>
+        <transform rotation='1 0 0 -1.587'>
+        <transform  id= 'Box2_Move' DEF='dad_MoveMe'  rotation='1 0 0 1.587'>
+          <shape DEF='Box2'>
+            <appearance>
+              <material DEF='Black' diffuseColor='1 0 0'></material>
+            </appearance>
+            <box DEF='GeoBox2' size='0.11 1.8 0.11'></box>
+          </shape>
+        </transform>
+        </transform>
+        </transform>
+        </group>
+
+        <group>
+        <planeSensor id = 'Box3' autoOffset='true' axisRotation='1 0 0' minPosition='-1.5 -2.5' maxPosition='2.5 1.5' onoutputchange='processTranslationGizmoEvent(event)'>
+        </planeSensor>
+ 		<transform  translation='-0.5 0.85 -0.5'>
+        <transform rotation='1 0 0 -1.587'>
+ 		<transform  id='Box3_Move'  DEF='dad_MoveMe0' rotation='1 0 0 1.587'>
+ 		  <shape DEF='Box3' >
+            <appearance>
+              	<material DEF='Black' diffuseColor='0 0 1'></material>
+            </appearance>
+            <box DEF='GeoBox3' size='0.11 1.8 0.11'></box>
+          </shape>
+        </transform>
+        </transform>
+        </transform>
+        </group>
+
+        <group>
+        <planeSensor id = 'Box4' autoOffset='true' axisRotation='1 0 0' minPosition='-0.5 -3.5' maxPosition='3.5 0.5' onoutputchange='processTranslationGizmoEvent(event)'>
+        </planeSensor>
+ 		<transform  translation='-1.5 0.85 -1.5'>
+        <transform rotation='1 0 0 -1.587'>
+ 		<transform  id='Box4_Move'  DEF='dad_MoveMe0' rotation='1 0 0 1.587'>
+ 		  <shape DEF='Box4' >
+            <appearance>
+              	<material DEF='Black' diffuseColor='1 1 0'></material>
+            </appearance>
+            <box DEF='GeoBox4' size='0.11 1.8 0.11'></box>
+          </shape>
+        </transform>
+        </transform>
+        </transform>
+        </group>
+
+        <group>
+        <planeSensor id = 'Box5' autoOffset='true' axisRotation='1 0 0' minPosition='-3.5 -0.5' maxPosition='0.5 3.5' onoutputchange='processTranslationGizmoEvent(event)'>
+        </planeSensor>
+ 		<transform  translation='1.5 0.85 1.5'>
+        <transform rotation='1 0 0 -1.587'>
+ 		<transform  id='Box5_Move'  DEF='dad_MoveMe0' rotation='1 0 0 1.587'>
+ 		  <shape DEF='Box5' >
+            <appearance>
+              	<material DEF='Black' diffuseColor='1 0 1'></material>
+            </appearance>
+            <box DEF='GeoBox5' size='0.11 1.8 0.11'></box>
+          </shape>
+        </transform>
+        </transform>
+        </transform>
+        </group>
+      </scene>
+    </x3d>
+
+ 
+
+  </body>
+</html>
